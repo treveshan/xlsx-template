@@ -46,11 +46,11 @@ describe("Helpers", function() {
         it("can extract simple placeholders", function() {
             var t = new XlsxTemplate();
 
-            expect(t.extractPlaceholders("${foo}")).toEqual([{
+            expect(t.extractPlaceholders("{foo}")).toEqual([{
                 full: true,
                 key: undefined,
                 name: "foo",
-                placeholder: "${foo}",
+                placeholder: "{foo}",
                 subType: undefined,
                 type: "normal"
             }]);
@@ -59,11 +59,11 @@ describe("Helpers", function() {
         it("can extract simple placeholders inside strings", function() {
             var t = new XlsxTemplate();
 
-            expect(t.extractPlaceholders("A string ${foo} bar")).toEqual([{
+            expect(t.extractPlaceholders("A string {foo} bar")).toEqual([{
                 full: false,
                 key: undefined,
                 name: "foo",
-                placeholder: "${foo}",
+                placeholder: "{foo}",
                 subType: undefined,
                 type: "normal"
             }]);
@@ -72,18 +72,18 @@ describe("Helpers", function() {
         it("can extract multiple placeholders from one string", function() {
             var t = new XlsxTemplate();
 
-            expect(t.extractPlaceholders("${foo} ${bar}")).toEqual([{
+            expect(t.extractPlaceholders("{foo} {bar}")).toEqual([{
                 full: false,
                 key: undefined,
                 name: "foo",
-                placeholder: "${foo}",
+                placeholder: "{foo}",
                 subType: undefined,
                 type: "normal"
             }, {
                 full: false,
                 key: undefined,
                 name: "bar",
-                placeholder: "${bar}",
+                placeholder: "{bar}",
                 subType: undefined,
                 type: "normal"
             }]);
@@ -92,11 +92,11 @@ describe("Helpers", function() {
         it("can extract placeholders with keys", function() {
             var t = new XlsxTemplate();
 
-            expect(t.extractPlaceholders("${foo.bar}")).toEqual([{
+            expect(t.extractPlaceholders("{foo.bar}")).toEqual([{
                 full: true,
                 key: "bar",
                 name: "foo",
-                placeholder: "${foo.bar}",
+                placeholder: "{foo.bar}",
                 subType: undefined,
                 type: "normal"
             }]);
@@ -105,11 +105,11 @@ describe("Helpers", function() {
         it("can extract placeholders with types", function() {
             var t = new XlsxTemplate();
 
-            expect(t.extractPlaceholders("${table:foo}")).toEqual([{
+            expect(t.extractPlaceholders("{table:foo}")).toEqual([{
                 full: true,
                 key: undefined,
                 name: "foo",
-                placeholder: "${table:foo}",
+                placeholder: "{table:foo}",
                 subType: undefined,
                 type: "table"
             }]);
@@ -118,11 +118,11 @@ describe("Helpers", function() {
         it("can extract placeholders with types and keys", function() {
             var t = new XlsxTemplate();
 
-            expect(t.extractPlaceholders("${table:foo.bar}")).toEqual([{
+            expect(t.extractPlaceholders("{table:foo.bar}")).toEqual([{
                 full: true,
                 key: "bar",
                 name: "foo",
-                placeholder: "${table:foo.bar}",
+                placeholder: "{table:foo.bar}",
                 subType: undefined,
                 type: "table"
             }]);
@@ -141,15 +141,15 @@ describe("Helpers", function() {
         it("Returns true if there is a colon", function() {
             var t = new XlsxTemplate();
             expect(t.isRange("A1:A2")).toEqual(true);
-            expect(t.isRange("$A$1:$A$2")).toEqual(true);
-            expect(t.isRange("Table!$A$1:$A$2")).toEqual(true);
+            expect(t.isRange("A1:A2")).toEqual(true);
+            expect(t.isRange("Table!A1:A2")).toEqual(true);
         });
 
         it("Returns false if there is not a colon", function() {
             var t = new XlsxTemplate();
             expect(t.isRange("A1")).toEqual(false);
-            expect(t.isRange("$A$1")).toEqual(false);
-            expect(t.isRange("Table!$A$1")).toEqual(false);
+            expect(t.isRange("A1")).toEqual(false);
+            expect(t.isRange("Table!A1")).toEqual(false);
         });
 
     });
@@ -168,18 +168,18 @@ describe("Helpers", function() {
 
         it("splits absolute references", function() {
             var t = new XlsxTemplate();
-            expect(t.splitRef("$AB12")).toEqual({table: null, col: "AB", colAbsolute: true, row: 12, rowAbsolute: false});
-            expect(t.splitRef("AB$12")).toEqual({table: null, col: "AB", colAbsolute: false, row: 12, rowAbsolute: true});
-            expect(t.splitRef("$AB$12")).toEqual({table: null, col: "AB", colAbsolute: true, row: 12, rowAbsolute: true});
+            expect(t.splitRef("AB12")).toEqual({table: null, col: "AB", colAbsolute: false, row: 12, rowAbsolute: false});
+            expect(t.splitRef("AB12")).toEqual({table: null, col: "AB", colAbsolute: false, row: 12, rowAbsolute: false});
+            expect(t.splitRef("AB12")).toEqual({table: null, col: "AB", colAbsolute: false, row: 12, rowAbsolute: false});
         });
 
         it("splits references with tables", function() {
             var t = new XlsxTemplate();
             expect(t.splitRef("Table one!AB12")).toEqual({table: "Table one", col: "AB", colAbsolute: false, row: 12, rowAbsolute: false});
-            expect(t.splitRef("Table one!$AB12")).toEqual({table: "Table one", col: "AB", colAbsolute: true, row: 12, rowAbsolute: false});
-            expect(t.splitRef("Table one!$AB12")).toEqual({table: "Table one", col: "AB", colAbsolute: true, row: 12, rowAbsolute: false});
-            expect(t.splitRef("Table one!AB$12")).toEqual({table: "Table one", col: "AB", colAbsolute: false, row: 12, rowAbsolute: true});
-            expect(t.splitRef("Table one!$AB$12")).toEqual({table: "Table one", col: "AB", colAbsolute: true, row: 12, rowAbsolute: true});
+            expect(t.splitRef("Table one!AB12")).toEqual({table: "Table one", col: "AB", colAbsolute: false, row: 12, rowAbsolute: false});
+            expect(t.splitRef("Table one!AB12")).toEqual({table: "Table one", col: "AB", colAbsolute: false, row: 12, rowAbsolute: false});
+            expect(t.splitRef("Table one!AB12")).toEqual({table: "Table one", col: "AB", colAbsolute: false, row: 12, rowAbsolute: false});
+            expect(t.splitRef("Table one!AB12")).toEqual({table: "Table one", col: "AB", colAbsolute: false, row: 12, rowAbsolute: false});
         });
 
     });
@@ -443,13 +443,13 @@ describe("Helpers", function() {
 
         it("can substitute simple string values", function() {
             var t = new XlsxTemplate(),
-                string = "${foo}",
+                string = "{foo}",
                 substitution = "bar",
                 placeholder = {
                     full: true,
                     key: undefined,
                     name: "foo",
-                    placeholder: "${foo}",
+                    placeholder: "{foo}",
                     type: "normal"
                 },
                 val = {
@@ -466,18 +466,18 @@ describe("Helpers", function() {
             expect(t.substituteScalar(col, string, placeholder, substitution)).toEqual("bar");
             expect(col.attrib.t).toEqual("s");
             expect(String(val.text)).toEqual("1");
-            expect(t.sharedStrings).toEqual(["${foo}", "bar"]);
+            expect(t.sharedStrings).toEqual(["{foo}", "bar"]);
         });
         
         it("Substitution of shared simple string values", function() {
             var t = new XlsxTemplate(),
-                string = "${foo}",
+                string = "{foo}",
                 substitution = "bar",
                 placeholder = {
                     full: true,
                     key: undefined,
                     name: "foo",
-                    placeholder: "${foo}",
+                    placeholder: "{foo}",
                     type: "normal"
                 },
                 val = {
@@ -497,18 +497,18 @@ describe("Helpers", function() {
             expect(t.substituteScalar(col, string, placeholder, substitution)).toEqual("bar");
             expect(col.attrib.t).toEqual("s");
             expect(String(val.text)).toEqual("1");
-            expect(t.sharedStrings).toEqual(["${foo}", "bar"]);
+            expect(t.sharedStrings).toEqual(["{foo}", "bar"]);
         });
 
         it("can substitute simple numeric values", function() {
             var t = new XlsxTemplate(),
-                string = "${foo}",
+                string = "{foo}",
                 substitution = 10,
                 placeholder = {
                     full: true,
                     key: undefined,
                     name: "foo",
-                    placeholder: "${foo}",
+                    placeholder: "{foo}",
                     type: "normal"
                 },
                 val = {
@@ -525,18 +525,18 @@ describe("Helpers", function() {
             expect(t.substituteScalar(col, string, placeholder, substitution)).toEqual("10");
             expect(col.attrib.t).not.toBeDefined();
             expect(val.text).toEqual("10");
-            expect(t.sharedStrings).toEqual(["${foo}"]);
+            expect(t.sharedStrings).toEqual(["{foo}"]);
         });
 
         it("can substitute simple boolean values (false)", function() {
             var t = new XlsxTemplate(),
-                string = "${foo}",
+                string = "{foo}",
                 substitution = false,
                 placeholder = {
                     full: true,
                     key: undefined,
                     name: "foo",
-                    placeholder: "${foo}",
+                    placeholder: "{foo}",
                     type: "normal"
                 },
                 val = {
@@ -553,18 +553,18 @@ describe("Helpers", function() {
             expect(t.substituteScalar(col, string, placeholder, substitution)).toEqual("0");
             expect(col.attrib.t).toEqual("b");
             expect(val.text).toEqual("0");
-            expect(t.sharedStrings).toEqual(["${foo}"]);
+            expect(t.sharedStrings).toEqual(["{foo}"]);
         });
 
         it("can substitute simple boolean values (true)", function() {
             var t = new XlsxTemplate(),
-                string = "${foo}",
+                string = "{foo}",
                 substitution = true,
                 placeholder = {
                     full: true,
                     key: undefined,
                     name: "foo",
-                    placeholder: "${foo}",
+                    placeholder: "{foo}",
                     type: "normal"
                 },
                 val = {
@@ -581,18 +581,18 @@ describe("Helpers", function() {
             expect(t.substituteScalar(col, string, placeholder, substitution)).toEqual("1");
             expect(col.attrib.t).toEqual("b");
             expect(val.text).toEqual("1");
-            expect(t.sharedStrings).toEqual(["${foo}"]);
+            expect(t.sharedStrings).toEqual(["{foo}"]);
         });
 
         it("can substitute dates", function() {
             var t = new XlsxTemplate(),
-                string = "${foo}",
+                string = "{foo}",
                 substitution = new Date("2013-01-01"),
                 placeholder = {
                     full: true,
                     key: undefined,
                     name: "foo",
-                    placeholder: "${foo}",
+                    placeholder: "{foo}",
                     type: "normal"
                 },
                 val = {
@@ -609,18 +609,18 @@ describe("Helpers", function() {
             expect(t.substituteScalar(col, string, placeholder, substitution)).toEqual(41275);
             expect(col.attrib.t).not.toBeDefined();
             expect(val.text).toEqual(41275);
-            expect(t.sharedStrings).toEqual(["${foo}"]);
+            expect(t.sharedStrings).toEqual(["{foo}"]);
         });
 
         it("can substitute parts of strings", function() {
             var t = new XlsxTemplate(),
-                string = "foo: ${foo}",
+                string = "foo: {foo}",
                 substitution = "bar",
                 placeholder = {
                     full: false,
                     key: undefined,
                     name: "foo",
-                    placeholder: "${foo}",
+                    placeholder: "{foo}",
                     type: "normal"
                 },
                 val = {
@@ -637,18 +637,18 @@ describe("Helpers", function() {
             expect(t.substituteScalar(col, string, placeholder, substitution)).toEqual("foo: bar");
             expect(col.attrib.t).toEqual("s");
             expect(val.text).toEqual("1");
-            expect(t.sharedStrings).toEqual(["foo: ${foo}", "foo: bar"]);
+            expect(t.sharedStrings).toEqual(["foo: {foo}", "foo: bar"]);
         });
 
         it("can substitute parts of strings with booleans", function() {
             var t = new XlsxTemplate(),
-                string = "foo: ${foo}",
+                string = "foo: {foo}",
                 substitution = false,
                 placeholder = {
                     full: false,
                     key: undefined,
                     name: "foo",
-                    placeholder: "${foo}",
+                    placeholder: "{foo}",
                     type: "normal"
                 },
                 val = {
@@ -665,18 +665,18 @@ describe("Helpers", function() {
             expect(t.substituteScalar(col, string, placeholder, substitution)).toEqual("foo: 0");
             expect(col.attrib.t).toEqual("s");
             expect(val.text).toEqual("1");
-            expect(t.sharedStrings).toEqual(["foo: ${foo}", "foo: 0"]);
+            expect(t.sharedStrings).toEqual(["foo: {foo}", "foo: 0"]);
         });
 
         it("can substitute parts of strings with numbers", function() {
             var t = new XlsxTemplate(),
-                string = "foo: ${foo}",
+                string = "foo: {foo}",
                 substitution = 10,
                 placeholder = {
                     full: false,
                     key: undefined,
                     name: "foo",
-                    placeholder: "${foo}",
+                    placeholder: "{foo}",
                     type: "normal"
                 },
                 val = {
@@ -693,7 +693,7 @@ describe("Helpers", function() {
             expect(t.substituteScalar(col, string, placeholder, substitution)).toEqual("foo: 10");
             expect(col.attrib.t).toEqual("s");
             expect(val.text).toEqual("1");
-            expect(t.sharedStrings).toEqual(["foo: ${foo}", "foo: 10"]);
+            expect(t.sharedStrings).toEqual(["foo: {foo}", "foo: 10"]);
         });
 
 

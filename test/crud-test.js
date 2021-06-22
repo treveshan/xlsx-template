@@ -25,10 +25,10 @@ describe("CRUD operations", function() {
 
                 var t = new XlsxTemplate(data);
                 expect(t.sharedStrings).toEqual([
-                    "Name", "Role", "Plan table", "${table:planData.name}",
-                    "${table:planData.role}", "${table:planData.days}",
-                    "${dates}", "${revision}",
-                    "Extracted on ${extractDate}"
+                    "Name", "Role", "Plan table","{revision}", "{table:planData.name}",
+                    "{table:planData.role}", "{table:planData.days}",
+                    "{dates}", 
+                    "Extracted on {extractDate}"
                 ]);
 
                 done();
@@ -620,8 +620,8 @@ describe("CRUD operations", function() {
             ;
 
             //expect(sheet1.find("./hyperlinks/hyperlink/c[@r='C16']/v").text).toEqual("41275");
-            expect(rels.find("./Relationship[@Id='rId2']").attrib.Target).toEqual("http://www.google.com");
-            expect(rels.find("./Relationship[@Id='rId1']").attrib.Target).toEqual("mailto:john@bob.com?subject=Hello%20hello");
+            expect(rels.find("./Relationship[@Id='rId2']").attrib.Target).toEqual("$http://www.google.com");
+            expect(rels.find("./Relationship[@Id='rId1']").attrib.Target).toEqual("mailto:$john@bob.com?subject=Hello%20$hello");
 
             // XXX: For debugging only
             fs.writeFileSync('test/output/test9.xlsx', newData, 'binary');
