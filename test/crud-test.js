@@ -1000,7 +1000,7 @@ describe("CRUD operations", function() {
             });
         });
 
-        it("Insert image and create rels", function(done) {
+        xit("Insert image and create rels", function(done) {
             fs.readFile(path.join(__dirname, 'templates', 'test-insert-images.xlsx'), function(err, data) {
                 expect(err).toBeNull();
                 var option = {
